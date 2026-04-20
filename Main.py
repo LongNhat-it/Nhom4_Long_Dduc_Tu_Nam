@@ -1,11 +1,9 @@
-import tkinter as tk
-from app_manager import CoffeeSystem
+from appmanager import AppManager
 
 def main():
-    print("Phần mềm đang khởi chạy")
-    root = tk.Tk()
-    app = CoffeeSystem(root)
-    root.mainloop()
+    print("--- Ứng dụng Quản lý Kho Cafe đang khởi động ---")
+    app = AppManager()
+    app.run()
 
 if __name__ == "__main__":
     main()
