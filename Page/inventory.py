@@ -14,7 +14,6 @@ class InventoryPage:
         self.file_path = "database/nguyenlieu.csv"
         self.recipe_file = "database/congthuc.csv"
 
-        # Định nghĩa các trường dữ liệu cố định cho kho
         self.fields = ["Mã", "Tên", "Loại", "Tồn", "Đơn vị", "Giá"]
 
         self.view()
@@ -35,7 +34,6 @@ class InventoryPage:
                                command=self.app_manager.show_login_page)
         btn_logout.pack(side="right", padx=20, pady=15)
 
-        # Tạo Notebook với 4 Tab (Đã bỏ Tab tài khoản)
         self.notebook = ttk.Notebook(self.master)
         self.notebook.pack(fill="both", expand=True, padx=10, pady=10)
 
@@ -49,21 +47,18 @@ class InventoryPage:
         self.notebook.add(self.tab3, text=" 3. Thống kê ")
         self.notebook.add(self.tab4, text=" 4. Báo cáo ")
 
-        # Cài đặt giao diện các Tab
         self.setup_tab_inventory()
         self.setup_tab_recipe()
         self.setup_tab_stats()
         self.setup_tab_reports()
 
-        # Tự động cập nhật báo cáo khi nhấn vào Tab 4
         self.notebook.bind("<<NotebookTabChanged>>", self.on_tab_change)
 
     def on_tab_change(self, event):
-        # Index 3 tương ứng với Tab 4 (Báo cáo)
         if self.notebook.index(self.notebook.select()) == 3:
             self.generate_report_logic()
 
-    # --- TAB 1: KHO HÀNG ---
+    # kho hang
     def setup_tab_inventory(self):
         toolbar = tk.Frame(self.tab1, bg="white", pady=10)
         toolbar.pack(fill="x")
@@ -84,7 +79,7 @@ class InventoryPage:
         self.tree.pack(fill="both", expand=True, padx=10, pady=10)
         self.tree.tag_configure('low', background='#ffcccc')
 
-    # --- TAB 2: CÔNG THỨC ---
+    # cong thuc
     def setup_tab_recipe(self):
         toolbar = tk.Frame(self.tab2, bg="white", pady=10)
         toolbar.pack(fill="x")
@@ -99,7 +94,7 @@ class InventoryPage:
         self.recipe_tree.heading("note", text="Ghi chú")
         self.recipe_tree.pack(fill="both", expand=True, padx=10, pady=10)
 
-    # --- TAB 3: THỐNG KÊ ---
+    # thong ke
     def setup_tab_stats(self):
         toolbar = tk.Frame(self.tab3, bg="white", pady=10)
         toolbar.pack(fill="x")
@@ -112,15 +107,13 @@ class InventoryPage:
         self.stats_tree.heading("v", text="Giá Trị Tồn")
         self.stats_tree.pack(fill="both", expand=True, padx=10, pady=10)
 
-    # --- TAB 4: BÁO CÁO ---
+    # bao cao
     def setup_tab_reports(self):
         frame = tk.Frame(self.tab4, bg="white", padx=20, pady=20)
         frame.pack(fill="both", expand=True)
         tk.Label(frame, text="📊 BÁO CÁO TỔNG QUAN HÀNG HÓA", font=("Arial", 14, "bold"), bg="white").pack(anchor="center")
         self.txt_report = tk.Text(frame, font=("Courier New", 12), bg="#F8F9FA", padx=10, pady=10)
         self.txt_report.pack(fill="both", expand=True, pady=10)
-
-    # ================= LOGIC XỬ LÝ =================
 
     def generate_report_logic(self):
         """Tự động tính toán khi xem Tab Báo cáo"""
@@ -164,7 +157,6 @@ Hệ thống tự động cập nhật số liệu mới nhất.
                     thanh_tien = int(r[3]) * int(r[5])
                     self.stats_tree.insert("", "end", values=(r[1], r[3], f"{thanh_tien:,} VNĐ"))
 
-    # Các hàm bổ trợ cho Kho
     def refresh_data(self):
         for i in self.tree.get_children(): self.tree.delete(i)
         if not os.path.exists(self.file_path):
@@ -228,7 +220,6 @@ Hệ thống tự động cập nhật số liệu mới nhất.
 
         tk.Button(win, text="CẬP NHẬT", command=save, bg="#8B4513", fg="white", width=15, height=2).pack(pady=20)
 
-    # Các hàm bổ trợ cho Công thức
     def refresh_recipes(self):
         for i in self.recipe_tree.get_children(): self.recipe_tree.delete(i)
         if os.path.exists(self.recipe_file):
@@ -276,7 +267,6 @@ Hệ thống tự động cập nhật số liệu mới nhất.
             messagebox.showwarning("Chú ý", "Vui lòng chọn món cần xóa trong bảng công thức!")
             return
 
-        # Lấy Tên món (Cột index 0 trong bảng Công thức)
         ten_mon = str(self.recipe_tree.item(selected[0])['values'][0]).strip()
 
         if not messagebox.askyesno("Xác nhận", f"Xóa công thức món: {ten_mon}?"):
@@ -287,7 +277,6 @@ Hệ thống tự động cập nhật số liệu mới nhất.
             if os.path.exists(self.recipe_file):
                 with open(self.recipe_file, "r", encoding="utf-8") as f:
                     reader = csv.reader(f)
-                    # Công thức thường không có header, nếu có hãy dùng next(reader)
                     for r in reader:
                         if r and str(r[0]).strip() != ten_mon:
                             rows_keep.append(r)
